@@ -12,7 +12,13 @@ struct RBTSquaresLogoScreensaverViewRepresentable: NSViewRepresentable {
     typealias NSViewType = RBTSquaresLogoScreenSaverView
 
     func makeNSView(context: NSViewRepresentableContext<RBTSquaresLogoScreensaverViewRepresentable>) -> RBTSquaresLogoScreenSaverView {
-        return RBTSquaresLogoScreenSaverView()
+        
+        // Return animated view
+        let saver = RBTSquaresLogoScreenSaverView(frame: .zero, isPreview: true)!
+        Timer.scheduledTimer(withTimeInterval: 1.0 / 30, repeats: true) { _ in
+            saver.animateOneFrame()
+        }
+        return saver
     }
     
     func updateNSView(_ nsView: RBTSquaresLogoScreenSaverView, context: NSViewRepresentableContext<RBTSquaresLogoScreensaverViewRepresentable>) {
