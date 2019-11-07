@@ -39,131 +39,82 @@ import GameKit
 class RBTSquaresLogoScreenSaverView: ScreenSaverView {
 
     // MARK: - Cache
-    
+
     private struct Cache {
-        static let rbtWhite: NSColor = NSColor(red: 1, green: 1, blue: 1, alpha: 1)
-        static let rbtBlack: NSColor = NSColor(red: 0, green: 0, blue: 0, alpha: 1)
-        static let rbtRed: NSColor = NSColor(red: 210 / 255, green: 0 / 255, blue: 0 / 255, alpha: 1)
+        static let rbtWhite = NSColor(red: 1, green: 1, blue: 1, alpha: 1)
+        static let rbtBlack = NSColor(red: 0, green: 0, blue: 0, alpha: 1)
+        static let rbtRed = NSColor(red: 210 / 255, green: 0 / 255, blue: 0 / 255, alpha: 1)
         
-        static let rbtWhites: [CGPoint] = [
-            CGPoint(x: 8, y: 3),
-            CGPoint(x: 8, y: 4),
-            CGPoint(x: 12, y: 6),
-            CGPoint(x: 8, y: 5),
-            CGPoint(x: 10, y: 6),
-            CGPoint(x: 11, y: 7),
-            CGPoint(x: 6, y: 7),
-            CGPoint(x: 11, y: 8),
-            CGPoint(x: 9, y: 8),
-            CGPoint(x: 6, y: 8),
-            CGPoint(x: 4, y: 8),
-            CGPoint(x: 12, y: 9),
-            CGPoint(x: 7, y: 9),
-            CGPoint(x: 11, y: 10),
-            CGPoint(x: 9, y: 10),
-            CGPoint(x: 5, y: 10),
-            CGPoint(x: 10, y: 11),
-            CGPoint(x: 6, y: 11),
-            CGPoint(x: 9, y: 12),
-            CGPoint(x: 7, y: 12)
+        static let rbtLogo: [[Int]] = [
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 1, 1, 1, 2, 3, 2, 3, 1, 1, 1, 0, 0, 0],
+            [0, 0, 0, 1, 2, 2, 3, 2, 2, 2, 3, 1, 1, 0, 0, 0],
+            [0, 0, 0, 2, 2, 3, 2, 2, 2, 3, 2, 3, 1, 0, 0, 0],
+            [0, 0, 0, 0, 2, 2, 2, 3, 2, 2, 2, 2, 3, 0, 0, 0],
+            [0, 0, 0, 2, 3, 2, 3, 2, 2, 3, 2, 3, 1, 1, 0, 0],
+            [0, 0, 1, 1, 2, 2, 3, 2, 2, 2, 2, 3, 1, 1, 0, 0],
+            [0, 0, 1, 1, 1, 2, 2, 2, 2, 2, 3, 2, 3, 0, 0, 0],
+            [0, 0, 1, 1, 1, 1, 1, 2, 3, 1, 1, 1, 1, 0, 0, 0],
+            [0, 0, 1, 1, 1, 1, 1, 2, 3, 1, 1, 1, 1, 0, 0, 0],
+            [0, 0, 1, 1, 1, 1, 1, 2, 3, 1, 1, 1, 1, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         ]
-        static let rbtBlacks: [CGPoint] = [
-            CGPoint(x: 7, y: 3),
-            CGPoint(x: 7, y: 4),
-            CGPoint(x: 7, y: 5),
-            CGPoint(x: 11, y: 6),
-            CGPoint(x: 9, y: 6),
-            CGPoint(x: 8, y: 6),
-            CGPoint(x: 7, y: 6),
-            CGPoint(x: 6, y: 6),
-            CGPoint(x: 5, y: 6),
-            CGPoint(x: 10, y: 7),
-            CGPoint(x: 9, y: 7),
-            CGPoint(x: 8, y: 7),
-            CGPoint(x: 7, y: 7),
-            CGPoint(x: 5, y: 7),
-            CGPoint(x: 4, y: 7),
-            CGPoint(x: 10, y: 8),
-            CGPoint(x: 8, y: 8),
-            CGPoint(x: 7, y: 8),
-            CGPoint(x: 5, y: 8),
-            CGPoint(x: 3, y: 8),
-            CGPoint(x: 11, y: 9),
-            CGPoint(x: 10, y: 9),
-            CGPoint(x: 9, y: 9),
-            CGPoint(x: 8, y: 9),
-            CGPoint(x: 6, y: 9),
-            CGPoint(x: 5, y: 9),
-            CGPoint(x: 4, y: 9),
-            CGPoint(x: 10, y: 10),
-            CGPoint(x: 8, y: 10),
-            CGPoint(x: 7, y: 10),
-            CGPoint(x: 6, y: 10),
-            CGPoint(x: 4, y: 10),
-            CGPoint(x: 3, y: 10),
-            CGPoint(x: 9, y: 11),
-            CGPoint(x: 8, y: 11),
-            CGPoint(x: 7, y: 11),
-            CGPoint(x: 5, y: 11),
-            CGPoint(x: 4, y: 11),
-            CGPoint(x: 8, y: 12),
-            CGPoint(x: 6, y: 12)
-        ]
-        static let rbtReds: [CGPoint] = [
-            CGPoint(x: 12, y: 2),
-            CGPoint(x: 11, y: 2),
-            CGPoint(x: 10, y: 2),
-            CGPoint(x: 9, y: 2),
-            CGPoint(x: 12, y: 3),
-            CGPoint(x: 11, y: 3),
-            CGPoint(x: 10, y: 3),
-            CGPoint(x: 9, y: 3),
-            CGPoint(x: 6, y: 3),
-            CGPoint(x: 5, y: 3),
-            CGPoint(x: 4, y: 3),
-            CGPoint(x: 3, y: 3),
-            CGPoint(x: 2, y: 3),
-            CGPoint(x: 12, y: 4),
-            CGPoint(x: 11, y: 4),
-            CGPoint(x: 10, y: 4),
-            CGPoint(x: 9, y: 4),
-            CGPoint(x: 6, y: 4),
-            CGPoint(x: 5, y: 4),
-            CGPoint(x: 4, y: 4),
-            CGPoint(x: 3, y: 4),
-            CGPoint(x: 2, y: 4),
-            CGPoint(x: 12, y: 5),
-            CGPoint(x: 11, y: 5),
-            CGPoint(x: 10, y: 5),
-            CGPoint(x: 9, y: 5),
-            CGPoint(x: 6, y: 5),
-            CGPoint(x: 5, y: 5),
-            CGPoint(x: 4, y: 5),
-            CGPoint(x: 3, y: 5),
-            CGPoint(x: 2, y: 5),
-            CGPoint(x: 4, y: 6),
-            CGPoint(x: 3, y: 6),
-            CGPoint(x: 2, y: 6),
-            CGPoint(x: 13, y: 7),
-            CGPoint(x: 12, y: 7),
-            CGPoint(x: 3, y: 7),
-            CGPoint(x: 2, y: 7),
-            CGPoint(x: 13, y: 8),
-            CGPoint(x: 12, y: 8),
-            CGPoint(x: 12, y: 10),
-            CGPoint(x: 12, y: 11),
-            CGPoint(x: 11, y: 11),
-            CGPoint(x: 3, y: 11),
-            CGPoint(x: 12, y: 12),
-            CGPoint(x: 11, y: 12),
-            CGPoint(x: 10, y: 12),
-            CGPoint(x: 5, y: 12),
-            CGPoint(x: 4, y: 12),
-            CGPoint(x: 3, y: 12),
-            CGPoint(x: 5, y: 13),
-            CGPoint(x: 4, y: 13),
-            CGPoint(x: 3, y: 13)
-        ]
+        
+        static let boxSize = CGFloat(2.0)
+
+        static var boxTypes: [SCNBox] {
+            let whiteBox = SCNBox(width: boxSize, height: boxSize, length: boxSize, chamferRadius: 0.0)
+            whiteBox.firstMaterial!.diffuse.contents = self.rbtWhite
+            whiteBox.firstMaterial!.specular.contents = self.rbtWhite
+            
+            let blackBox = SCNBox(width: boxSize, height: boxSize, length: boxSize, chamferRadius: 0.0)
+            blackBox.firstMaterial!.diffuse.contents = self.rbtBlack
+            blackBox.firstMaterial!.specular.contents = self.rbtBlack
+            
+            let redBox = SCNBox(width: boxSize, height: boxSize, length: boxSize, chamferRadius: 0.0)
+            redBox.firstMaterial!.diffuse.contents = self.rbtRed
+            redBox.firstMaterial!.specular.contents = self.rbtRed
+
+            return [
+                SCNBox(),
+                redBox,
+                blackBox,
+                whiteBox
+            ]
+        }
+        
+        static var logoNode: SCNNode {
+            // create a logo
+            let logoNode = SCNNode()
+            logoNode.name = "logo"
+            
+            let boxNodes = SCNNode()
+            boxNodes.position = SCNVector3(x: -8 * self.boxSize, y: 8 * self.boxSize, z: 0.0)
+            
+            for (j, row) in self.rbtLogo.enumerated() {
+                for (i, element) in row.enumerated() {
+                    if element == 0 {
+                        continue
+                    }
+                    let box = SCNNode(geometry: self.boxTypes[element])
+                    box.name = "box"
+                    box.position = SCNVector3(x: CGFloat(i) * self.boxSize, y: -CGFloat(j) * self.boxSize, z: 0.0)
+                    box.physicsBody = SCNPhysicsBody(type: .kinematic, shape: .init(node: box, options: nil))
+                    //box.physicsBody = SCNPhysicsBody(type: .dynamic, shape: .init(node: box, options: nil))
+                    //box.physicsBody?.mass = 1.0
+                    //box.physicsBody?.restitution = 0.5
+                    box.physicsField = SCNPhysicsField.noiseField(smoothness: CGFloat.random(in: 0...1), animationSpeed: CGFloat.random(in: 0...1))
+                    boxNodes.addChildNode(box)
+                }
+            }
+            logoNode.addChildNode(boxNodes)
+
+            return logoNode
+        }
     }
 
     // MARK: - Colors
@@ -171,10 +122,10 @@ class RBTSquaresLogoScreenSaverView: ScreenSaverView {
     var rbtWhite: NSColor { return Cache.rbtWhite }
     var rbtBlack: NSColor { return Cache.rbtBlack }
     var rbtRed: NSColor { return Cache.rbtRed }
-    
-    var rbtWhites: [CGPoint] { return Cache.rbtWhites }
-    var rbtBlacks: [CGPoint] { return Cache.rbtBlacks }
-    var rbtReds: [CGPoint] { return Cache.rbtReds }
+    var rbtLogo: [[Int]] { return Cache.rbtLogo }
+    var boxSize: CGFloat { return Cache.boxSize }
+    var boxTypes: [SCNBox] { return Cache.boxTypes }
+    var logoNode: SCNNode { return Cache.logoNode }
 
     // MARK: - SceneKit
 
@@ -200,70 +151,8 @@ class RBTSquaresLogoScreenSaverView: ScreenSaverView {
         
         // create a new scene
         let scene = SCNScene()
-
-        let boxSize = CGFloat(2.0)
-                        
-        // create a logo
-        let logoNode = SCNNode()
         
-        let whiteBox = SCNBox(width: boxSize, height: boxSize, length: boxSize, chamferRadius: 0.0)
-        whiteBox.firstMaterial!.diffuse.contents = self.rbtWhite
-        whiteBox.firstMaterial!.specular.contents = self.rbtWhite
-
-        let whiteNodes = SCNNode()
-        whiteNodes.position = SCNVector3(x: -8 * boxSize, y: -8 * boxSize, z: 0.0)
-        self.rbtWhites.forEach { p in
-            let box = SCNNode(geometry: whiteBox)
-            box.name = "box"
-            box.position = SCNVector3(x: p.x * boxSize, y: p.y * boxSize, z: 0.0)
-            box.physicsBody = SCNPhysicsBody(type: .kinematic, shape: .init(node: box, options: nil))
-            //box.physicsBody = SCNPhysicsBody(type: .dynamic, shape: .init(node: box, options: nil))
-            //box.physicsBody?.mass = 1.0
-            //box.physicsBody?.restitution = 0.5
-            box.physicsField = SCNPhysicsField.noiseField(smoothness: CGFloat.random(in: 0...1), animationSpeed: CGFloat.random(in: 0...1))
-            whiteNodes.addChildNode(box)
-        }
-        logoNode.addChildNode(whiteNodes)
-
-        let blackBox = SCNBox(width: boxSize, height: boxSize, length: boxSize, chamferRadius: 0.0)
-        blackBox.firstMaterial!.diffuse.contents = self.rbtBlack
-        blackBox.firstMaterial!.specular.contents = self.rbtBlack
-
-        let blackNodes = SCNNode()
-        blackNodes.position = SCNVector3(x: -8 * boxSize, y: -8 * boxSize, z: 0.0)
-        self.rbtBlacks.forEach { p in
-            let box = SCNNode(geometry: blackBox)
-            box.name = "box"
-            box.position = SCNVector3(x: p.x * boxSize, y: p.y * boxSize, z: 0.0)
-            box.physicsBody = SCNPhysicsBody(type: .kinematic, shape: .init(node: box, options: nil))
-            //box.physicsBody = SCNPhysicsBody(type: .dynamic, shape: .init(node: box, options: nil))
-            //box.physicsBody?.mass = 1.0
-            //box.physicsBody?.restitution = 0.5
-            box.physicsField = SCNPhysicsField.noiseField(smoothness: CGFloat.random(in: 0...1), animationSpeed: CGFloat.random(in: 0...1))
-            blackNodes.addChildNode(box)
-        }
-        logoNode.addChildNode(blackNodes)
-
-        let redBox = SCNBox(width: boxSize, height: boxSize, length: boxSize, chamferRadius: 0.0)
-        redBox.firstMaterial!.diffuse.contents = self.rbtRed
-        redBox.firstMaterial!.specular.contents = self.rbtRed
-
-        let redNodes = SCNNode()
-        redNodes.position = SCNVector3(x: -8 * boxSize, y: -8 * boxSize, z: 0.0)
-        self.rbtReds.forEach { p in
-            let box = SCNNode(geometry: redBox)
-            box.name = "box"
-            box.position = SCNVector3(x: p.x * boxSize, y: p.y * boxSize, z: 0.0)
-            box.physicsBody = SCNPhysicsBody(type: .kinematic, shape: .init(node: box, options: nil))
-            //box.physicsBody = SCNPhysicsBody(type: .dynamic, shape: .init(node: box, options: nil))
-            //box.physicsBody?.mass = 1.0
-            //box.physicsBody?.restitution = 0.5
-            box.physicsField = SCNPhysicsField.noiseField(smoothness: CGFloat.random(in: 0...1), animationSpeed: CGFloat.random(in: 0...1))
-            redNodes.addChildNode(box)
-        }
-        logoNode.addChildNode(redNodes)
-
-        scene.rootNode.addChildNode(logoNode)
+        scene.rootNode.addChildNode(self.logoNode)
 
         // create and add a camera to the scene
         let cameraNode = SCNNode()
@@ -286,16 +175,19 @@ class RBTSquaresLogoScreenSaverView: ScreenSaverView {
         ambientLightNode.light!.type = .ambient
         ambientLightNode.light!.color = NSColor.darkGray
         scene.rootNode.addChildNode(ambientLightNode)
-                
-        // animate the logo node
-        logoNode.runAction(SCNAction.repeatForever(SCNAction.rotateBy(x: 0, y: 1, z: 0, duration: 1)))
         
-//        // animate the logo "box" nodes
-//        logoNode.childNodes { (node, _) -> Bool in
-//            return node.name == "box"
-//        }.forEach { (node) in
-//            node.runAction(SCNAction.repeatForever(SCNAction.rotateBy(x: 0, y: 0, z: 1, duration: 1)))
-//        }
+        // animate the logo "box" and "logo" nodes
+        scene.rootNode.childNodes { (node, _) -> Bool in
+            switch node.name {
+                case "box":
+                    node.runAction(SCNAction.repeatForever(SCNAction.rotateBy(x: 1, y: 0, z: 1, duration: 1)))
+                case "logo":
+                    node.runAction(SCNAction.repeatForever(SCNAction.rotateBy(x: 0, y: 1, z: 0, duration: 1)))
+                default:
+                    break
+            }
+            return false
+        }
         
         // set the scene to the view
         sceneView.scene = scene
