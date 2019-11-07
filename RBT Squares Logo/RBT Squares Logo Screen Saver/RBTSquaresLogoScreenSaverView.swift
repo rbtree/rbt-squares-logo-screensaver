@@ -10,6 +10,7 @@ import Foundation
 import ScreenSaver
 import SceneKit
 import GameKit
+import simd
 
 /**
  Call Order
@@ -73,11 +74,11 @@ class RBTSquaresLogoScreenSaverView: ScreenSaverView {
             
             let blackBox = SCNBox(width: boxSize, height: boxSize, length: boxSize, chamferRadius: 0.0)
             blackBox.firstMaterial!.diffuse.contents = self.rbtBlack
-            blackBox.firstMaterial!.specular.contents = self.rbtBlack
+            blackBox.firstMaterial!.specular.contents = self.rbtWhite.withAlphaComponent(0.25)
             
             let redBox = SCNBox(width: boxSize, height: boxSize, length: boxSize, chamferRadius: 0.0)
             redBox.firstMaterial!.diffuse.contents = self.rbtRed
-            redBox.firstMaterial!.specular.contents = self.rbtRed
+            redBox.firstMaterial!.specular.contents = self.rbtWhite.withAlphaComponent(0.25)
 
             return [
                 SCNBox(),
@@ -93,25 +94,79 @@ class RBTSquaresLogoScreenSaverView: ScreenSaverView {
             logoNode.name = "logo"
             
             let boxNodes = SCNNode()
-            boxNodes.position = SCNVector3(x: -8 * self.boxSize, y: 8 * self.boxSize, z: 0.0)
+            
+            let bpm = Double.random(in: 60.0...120.0) /* normal beats per minute */
+            let bps = bpm / 60.0 /* per second */
+            let bd = 1.0 / bps /* beat duration */
+            
+            // index offset
+            let off = Float(self.rbtLogo.count - 1) / 2.0
             
             for (j, row) in self.rbtLogo.enumerated() {
-                for (i, element) in row.enumerated() {
-                    if element == 0 {
-                        continue
-                    }
-                    let box = SCNNode(geometry: self.boxTypes[element])
+                var rowVals = [Any]()
+                for (i, value) in row.enumerated() {
+                    // offset index in a matrix
+                    let ox = Float(i) - off /* -off to +off, depending to a position in a row */
+                    let oy = off - Float(j) /* +off to -off, depending to a position in a col */
+
+                    // absolute positions per offset index in a matrix
+                    let xpos = self.boxSize * CGFloat(ox) /* -off * boxSize to +off * boxSize, depending on a position in a row */
+                    let ypos = self.boxSize * CGFloat(oy) /* -off * boxSize to +off * boxSize, depending on a position in a col */
+                    let zpos = CGFloat(0.0) /* 0.0 */
+                    
+                    // absolute transitions per offset index in a matrix
+                    let xtrans = self.boxSize * CGFloat(ox / off) /* -boxSize to 0 to +boxSize, depending to a position in a row, more at the edges */
+                    let ytrans = self.boxSize * CGFloat(oy / off) /* -boxSize to 0 to +boxSize, depending to a position in a col, more at the edges */
+                    let ztrans = self.boxSize * CGFloat((off - max(abs(ox), abs(oy))) / off) /* 0 to +boxSize to 0, depending to a position in a matrix, more at the center */
+
+                    // absolute rotations per offset index in a matrix
+                    //let xrot = CGFloat(ox / off) * .pi / 6.0
+                    //let yrot = CGFloat(oy / off) * .pi / 6.0
+                    //let zrot = CGFloat(0.0)
+
+                    rowVals.append(xtrans)
+
+                    guard value != 0 else { continue }
+                    
+                    let boxType = self.boxTypes[value]
+                    let box = SCNNode(geometry: boxType)
                     box.name = "box"
-                    box.position = SCNVector3(x: CGFloat(i) * self.boxSize, y: -CGFloat(j) * self.boxSize, z: 0.0)
-                    box.physicsBody = SCNPhysicsBody(type: .kinematic, shape: .init(node: box, options: nil))
+                    
+                    box.position = SCNVector3(x: xpos, y: ypos, z: zpos)
+                    //box.physicsBody = SCNPhysicsBody(type: .kinematic, shape: .init(node: box, options: nil))
                     //box.physicsBody = SCNPhysicsBody(type: .dynamic, shape: .init(node: box, options: nil))
                     //box.physicsBody?.mass = 1.0
                     //box.physicsBody?.restitution = 0.5
-                    box.physicsField = SCNPhysicsField.noiseField(smoothness: CGFloat.random(in: 0...1), animationSpeed: CGFloat.random(in: 0...1))
+                    //box.physicsField = SCNPhysicsField.noiseField(smoothness: CGFloat.random(in: 0...1), animationSpeed: CGFloat.random(in: 0...1))
+                    box.runAction(
+                        SCNAction.repeatForever(
+                            SCNAction.sequence([
+                                // 1/3
+                                SCNAction.group([
+                                    SCNAction.moveBy(x: xtrans, y: ytrans, z: ztrans, duration: bd / 3.0),
+                                    //SCNAction.rotateBy(x: xrot, y: yrot, z: zrot, duration: bd / 3.0),
+                                ]),
+                                // 2/3
+                                SCNAction.group([
+                                    //SCNAction.rotateBy(x: -xrot, y: -yrot, z: -zrot, duration: bd / 3.0),
+                                    SCNAction.moveBy(x: -xtrans, y: -ytrans, z: -ztrans, duration: bd / 3.0),
+                                ]),
+                                // 3/3
+                                SCNAction.wait(duration: bd / 3.0),
+                            ])
+                        )
+                    )
                     boxNodes.addChildNode(box)
                 }
+                debugPrint(rowVals)
             }
             logoNode.addChildNode(boxNodes)
+
+            //logoNode.runAction(
+            //    SCNAction.repeatForever(
+            //        SCNAction.rotateBy(x: 0, y: 1, z: 0, duration: 1)
+            //    )
+            //)
 
             return logoNode
         }
@@ -151,23 +206,24 @@ class RBTSquaresLogoScreenSaverView: ScreenSaverView {
         
         // create a new scene
         let scene = SCNScene()
-        
         scene.rootNode.addChildNode(self.logoNode)
 
         // create and add a camera to the scene
         let cameraNode = SCNNode()
+        cameraNode.name = "camera"
         cameraNode.camera = SCNCamera()
         scene.rootNode.addChildNode(cameraNode)
         
         // place the camera
-        cameraNode.position = SCNVector3(x: 0, y: 0, z: 64)
-        
+        cameraNode.position = SCNVector3(x: 0, y: 0, z: 32)
+        //cameraNode.rotation = SCNVector4(x: .pi/4, y: 0, z: 0, w: 1)
+
         // create and add a light to the scene
-        let lightNode = SCNNode()
-        lightNode.light = SCNLight()
-        lightNode.light!.type = .omni
-        lightNode.position = SCNVector3(x: 0, y: 64, z: 64)
-        scene.rootNode.addChildNode(lightNode)
+        let omniLightNode = SCNNode()
+        omniLightNode.light = SCNLight()
+        omniLightNode.light!.type = .omni
+        omniLightNode.position = SCNVector3(x: 0, y: 64, z: 64)
+        scene.rootNode.addChildNode(omniLightNode)
         
         // create and add an ambient light to the scene
         let ambientLightNode = SCNNode()
@@ -176,27 +232,60 @@ class RBTSquaresLogoScreenSaverView: ScreenSaverView {
         ambientLightNode.light!.color = NSColor.darkGray
         scene.rootNode.addChildNode(ambientLightNode)
         
-        // animate the logo "box" and "logo" nodes
-        scene.rootNode.childNodes { (node, _) -> Bool in
-            switch node.name {
-                case "box":
-                    node.runAction(SCNAction.repeatForever(SCNAction.rotateBy(x: 1, y: 0, z: 1, duration: 1)))
-                case "logo":
-                    node.runAction(SCNAction.repeatForever(SCNAction.rotateBy(x: 0, y: 1, z: 0, duration: 1)))
-                default:
-                    break
-            }
-            return false
-        }
-        
+//        // animate the logo "box" and "logo" nodes
+//        scene.rootNode.childNodes { (node, _) -> Bool in
+//            switch node.name {
+//            case "camera":
+//                node.runAction(
+//                    SCNAction.repeatForever(
+//                        SCNAction.rotateBy(
+//                            x: 0,
+//                            y: 0,
+//                            z: 1,
+//                            duration: 1
+//                        )
+//                    )
+//                )
+//            case "logo":
+//                node.runAction(
+//                    SCNAction.repeatForever(
+//                        SCNAction.rotateBy(
+//                            x: 0,
+//                            y: 1,
+//                            z: 0,
+//                            duration: Double.random(in: 1...2)
+//                        )
+//                    )
+//                )
+//            case "box":
+//                node.runAction(
+//                    SCNAction.repeatForever(
+//                        SCNAction.rotateBy(
+//                            x: CGFloat(Double.random(in: 1...2)),
+//                            y: 0,
+//                            z: CGFloat(Double.random(in: 1...2)),
+//                            duration: Double.random(in: 1...2)
+//                        )
+//                    )
+//                )
+//            default:
+//                break
+//            }
+//            return false
+//        }
+
         // set the scene to the view
         sceneView.scene = scene
         
+        #if DEBUG
         // allows the user to manipulate the camera
         sceneView.allowsCameraControl = true
+        #endif
         
+        #if DEBUG
         // show statistics such as fps and timing information
         sceneView.showsStatistics = true
+        #endif
         
         // configure the view
         sceneView.backgroundColor = .black
@@ -239,6 +328,7 @@ class RBTSquaresLogoScreenSaverView: ScreenSaverView {
         }
         
         super.startAnimation()
+//        self.sceneView.start()
     }
 
     override func animateOneFrame() {
