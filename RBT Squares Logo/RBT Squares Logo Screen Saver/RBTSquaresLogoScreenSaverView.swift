@@ -8,6 +8,8 @@
 
 import Foundation
 import ScreenSaver
+import SceneKit
+import GameKit
 
 /**
  Call Order
@@ -36,255 +38,308 @@ import ScreenSaver
  */
 class RBTSquaresLogoScreenSaverView: ScreenSaverView {
 
+    // MARK: - Cache
+    
+    private struct Cache {
+        static let rbtWhite: NSColor = NSColor(red: 1, green: 1, blue: 1, alpha: 1)
+        static let rbtBlack: NSColor = NSColor(red: 0, green: 0, blue: 0, alpha: 1)
+        static let rbtRed: NSColor = NSColor(red: 210 / 255, green: 0 / 255, blue: 0 / 255, alpha: 1)
+        
+        static let rbtWhites: [CGPoint] = [
+            CGPoint(x: 8, y: 3),
+            CGPoint(x: 8, y: 4),
+            CGPoint(x: 12, y: 6),
+            CGPoint(x: 8, y: 5),
+            CGPoint(x: 10, y: 6),
+            CGPoint(x: 11, y: 7),
+            CGPoint(x: 6, y: 7),
+            CGPoint(x: 11, y: 8),
+            CGPoint(x: 9, y: 8),
+            CGPoint(x: 6, y: 8),
+            CGPoint(x: 4, y: 8),
+            CGPoint(x: 12, y: 9),
+            CGPoint(x: 7, y: 9),
+            CGPoint(x: 11, y: 10),
+            CGPoint(x: 9, y: 10),
+            CGPoint(x: 5, y: 10),
+            CGPoint(x: 10, y: 11),
+            CGPoint(x: 6, y: 11),
+            CGPoint(x: 9, y: 12),
+            CGPoint(x: 7, y: 12)
+        ]
+        static let rbtBlacks: [CGPoint] = [
+            CGPoint(x: 7, y: 3),
+            CGPoint(x: 7, y: 4),
+            CGPoint(x: 7, y: 5),
+            CGPoint(x: 11, y: 6),
+            CGPoint(x: 9, y: 6),
+            CGPoint(x: 8, y: 6),
+            CGPoint(x: 7, y: 6),
+            CGPoint(x: 6, y: 6),
+            CGPoint(x: 5, y: 6),
+            CGPoint(x: 10, y: 7),
+            CGPoint(x: 9, y: 7),
+            CGPoint(x: 8, y: 7),
+            CGPoint(x: 7, y: 7),
+            CGPoint(x: 5, y: 7),
+            CGPoint(x: 4, y: 7),
+            CGPoint(x: 10, y: 8),
+            CGPoint(x: 8, y: 8),
+            CGPoint(x: 7, y: 8),
+            CGPoint(x: 5, y: 8),
+            CGPoint(x: 3, y: 8),
+            CGPoint(x: 11, y: 9),
+            CGPoint(x: 10, y: 9),
+            CGPoint(x: 9, y: 9),
+            CGPoint(x: 8, y: 9),
+            CGPoint(x: 6, y: 9),
+            CGPoint(x: 5, y: 9),
+            CGPoint(x: 4, y: 9),
+            CGPoint(x: 10, y: 10),
+            CGPoint(x: 8, y: 10),
+            CGPoint(x: 7, y: 10),
+            CGPoint(x: 6, y: 10),
+            CGPoint(x: 4, y: 10),
+            CGPoint(x: 3, y: 10),
+            CGPoint(x: 9, y: 11),
+            CGPoint(x: 8, y: 11),
+            CGPoint(x: 7, y: 11),
+            CGPoint(x: 5, y: 11),
+            CGPoint(x: 4, y: 11),
+            CGPoint(x: 8, y: 12),
+            CGPoint(x: 6, y: 12)
+        ]
+        static let rbtReds: [CGPoint] = [
+            CGPoint(x: 12, y: 2),
+            CGPoint(x: 11, y: 2),
+            CGPoint(x: 10, y: 2),
+            CGPoint(x: 9, y: 2),
+            CGPoint(x: 12, y: 3),
+            CGPoint(x: 11, y: 3),
+            CGPoint(x: 10, y: 3),
+            CGPoint(x: 9, y: 3),
+            CGPoint(x: 6, y: 3),
+            CGPoint(x: 5, y: 3),
+            CGPoint(x: 4, y: 3),
+            CGPoint(x: 3, y: 3),
+            CGPoint(x: 2, y: 3),
+            CGPoint(x: 12, y: 4),
+            CGPoint(x: 11, y: 4),
+            CGPoint(x: 10, y: 4),
+            CGPoint(x: 9, y: 4),
+            CGPoint(x: 6, y: 4),
+            CGPoint(x: 5, y: 4),
+            CGPoint(x: 4, y: 4),
+            CGPoint(x: 3, y: 4),
+            CGPoint(x: 2, y: 4),
+            CGPoint(x: 12, y: 5),
+            CGPoint(x: 11, y: 5),
+            CGPoint(x: 10, y: 5),
+            CGPoint(x: 9, y: 5),
+            CGPoint(x: 6, y: 5),
+            CGPoint(x: 5, y: 5),
+            CGPoint(x: 4, y: 5),
+            CGPoint(x: 3, y: 5),
+            CGPoint(x: 2, y: 5),
+            CGPoint(x: 4, y: 6),
+            CGPoint(x: 3, y: 6),
+            CGPoint(x: 2, y: 6),
+            CGPoint(x: 13, y: 7),
+            CGPoint(x: 12, y: 7),
+            CGPoint(x: 3, y: 7),
+            CGPoint(x: 2, y: 7),
+            CGPoint(x: 13, y: 8),
+            CGPoint(x: 12, y: 8),
+            CGPoint(x: 12, y: 10),
+            CGPoint(x: 12, y: 11),
+            CGPoint(x: 11, y: 11),
+            CGPoint(x: 3, y: 11),
+            CGPoint(x: 12, y: 12),
+            CGPoint(x: 11, y: 12),
+            CGPoint(x: 10, y: 12),
+            CGPoint(x: 5, y: 12),
+            CGPoint(x: 4, y: 12),
+            CGPoint(x: 3, y: 12),
+            CGPoint(x: 5, y: 13),
+            CGPoint(x: 4, y: 13),
+            CGPoint(x: 3, y: 13)
+        ]
+    }
+
+    // MARK: - Colors
+    
+    var rbtWhite: NSColor { return Cache.rbtWhite }
+    var rbtBlack: NSColor { return Cache.rbtBlack }
+    var rbtRed: NSColor { return Cache.rbtRed }
+    
+    var rbtWhites: [CGPoint] { return Cache.rbtWhites }
+    var rbtBlacks: [CGPoint] { return Cache.rbtBlacks }
+    var rbtReds: [CGPoint] { return Cache.rbtReds }
+
+    // MARK: - SceneKit
+
+    lazy var sceneView: SCNView = {
+        
+//        // Initialize the SceneKit view
+//        let options = [
+//
+//            // Use OpenGL 3.2
+//            SCNView.Option.preferredRenderingAPI.rawValue: NSNumber(value: SCNRenderingAPI.openGLCore32.rawValue),
+//
+//            // Use Metal
+//            SCNView.Option.preferredRenderingAPI.rawValue: NSNumber(value: SCNRenderingAPI.metal.rawValue),
+//
+//            // Use a default device as preferred
+//            SCNView.Option.preferredDevice.rawValue: MTLCreateSystemDefaultDevice() as Any,
+//
+//            // Use a low-power device as preferred
+//            SCNView.Option.preferLowPowerDevice.rawValue: NSNumber(booleanLiteral: true)
+//        ]
+//        let sceneView = SCNView.init(frame: self.bounds, options: options)
+        let sceneView = SCNView.init(frame: self.bounds)
+        
+        // create a new scene
+        let scene = SCNScene()
+
+        let boxSize = CGFloat(2.0)
+                        
+        // create a logo
+        let logoNode = SCNNode()
+        
+        let whiteBox = SCNBox(width: boxSize, height: boxSize, length: boxSize, chamferRadius: 0.0)
+        whiteBox.firstMaterial!.diffuse.contents = self.rbtWhite
+        whiteBox.firstMaterial!.specular.contents = self.rbtWhite
+
+        let whiteNodes = SCNNode()
+        whiteNodes.position = SCNVector3(x: -8 * boxSize, y: -8 * boxSize, z: 0.0)
+        self.rbtWhites.forEach { p in
+            let box = SCNNode(geometry: whiteBox)
+            box.name = "box"
+            box.position = SCNVector3(x: p.x * boxSize, y: p.y * boxSize, z: 0.0)
+            box.physicsBody = SCNPhysicsBody(type: .kinematic, shape: .init(node: box, options: nil))
+            //box.physicsBody = SCNPhysicsBody(type: .dynamic, shape: .init(node: box, options: nil))
+            //box.physicsBody?.mass = 1.0
+            //box.physicsBody?.restitution = 0.5
+            box.physicsField = SCNPhysicsField.noiseField(smoothness: CGFloat.random(in: 0...1), animationSpeed: CGFloat.random(in: 0...1))
+            whiteNodes.addChildNode(box)
+        }
+        logoNode.addChildNode(whiteNodes)
+
+        let blackBox = SCNBox(width: boxSize, height: boxSize, length: boxSize, chamferRadius: 0.0)
+        blackBox.firstMaterial!.diffuse.contents = self.rbtBlack
+        blackBox.firstMaterial!.specular.contents = self.rbtBlack
+
+        let blackNodes = SCNNode()
+        blackNodes.position = SCNVector3(x: -8 * boxSize, y: -8 * boxSize, z: 0.0)
+        self.rbtBlacks.forEach { p in
+            let box = SCNNode(geometry: blackBox)
+            box.name = "box"
+            box.position = SCNVector3(x: p.x * boxSize, y: p.y * boxSize, z: 0.0)
+            box.physicsBody = SCNPhysicsBody(type: .kinematic, shape: .init(node: box, options: nil))
+            //box.physicsBody = SCNPhysicsBody(type: .dynamic, shape: .init(node: box, options: nil))
+            //box.physicsBody?.mass = 1.0
+            //box.physicsBody?.restitution = 0.5
+            box.physicsField = SCNPhysicsField.noiseField(smoothness: CGFloat.random(in: 0...1), animationSpeed: CGFloat.random(in: 0...1))
+            blackNodes.addChildNode(box)
+        }
+        logoNode.addChildNode(blackNodes)
+
+        let redBox = SCNBox(width: boxSize, height: boxSize, length: boxSize, chamferRadius: 0.0)
+        redBox.firstMaterial!.diffuse.contents = self.rbtRed
+        redBox.firstMaterial!.specular.contents = self.rbtRed
+
+        let redNodes = SCNNode()
+        redNodes.position = SCNVector3(x: -8 * boxSize, y: -8 * boxSize, z: 0.0)
+        self.rbtReds.forEach { p in
+            let box = SCNNode(geometry: redBox)
+            box.name = "box"
+            box.position = SCNVector3(x: p.x * boxSize, y: p.y * boxSize, z: 0.0)
+            box.physicsBody = SCNPhysicsBody(type: .kinematic, shape: .init(node: box, options: nil))
+            //box.physicsBody = SCNPhysicsBody(type: .dynamic, shape: .init(node: box, options: nil))
+            //box.physicsBody?.mass = 1.0
+            //box.physicsBody?.restitution = 0.5
+            box.physicsField = SCNPhysicsField.noiseField(smoothness: CGFloat.random(in: 0...1), animationSpeed: CGFloat.random(in: 0...1))
+            redNodes.addChildNode(box)
+        }
+        logoNode.addChildNode(redNodes)
+
+        scene.rootNode.addChildNode(logoNode)
+
+        // create and add a camera to the scene
+        let cameraNode = SCNNode()
+        cameraNode.camera = SCNCamera()
+        scene.rootNode.addChildNode(cameraNode)
+        
+        // place the camera
+        cameraNode.position = SCNVector3(x: 0, y: 0, z: 64)
+        
+        // create and add a light to the scene
+        let lightNode = SCNNode()
+        lightNode.light = SCNLight()
+        lightNode.light!.type = .omni
+        lightNode.position = SCNVector3(x: 0, y: 64, z: 64)
+        scene.rootNode.addChildNode(lightNode)
+        
+        // create and add an ambient light to the scene
+        let ambientLightNode = SCNNode()
+        ambientLightNode.light = SCNLight()
+        ambientLightNode.light!.type = .ambient
+        ambientLightNode.light!.color = NSColor.darkGray
+        scene.rootNode.addChildNode(ambientLightNode)
+                
+        // animate the logo node
+        logoNode.runAction(SCNAction.repeatForever(SCNAction.rotateBy(x: 0, y: 1, z: 0, duration: 1)))
+        
+//        // animate the logo "box" nodes
+//        logoNode.childNodes { (node, _) -> Bool in
+//            return node.name == "box"
+//        }.forEach { (node) in
+//            node.runAction(SCNAction.repeatForever(SCNAction.rotateBy(x: 0, y: 0, z: 1, duration: 1)))
+//        }
+        
+        // set the scene to the view
+        sceneView.scene = scene
+        
+        // allows the user to manipulate the camera
+        sceneView.allowsCameraControl = true
+        
+        // show statistics such as fps and timing information
+        sceneView.showsStatistics = true
+        
+        // configure the view
+        sceneView.backgroundColor = .black
+        
+        return sceneView
+    }()
+
     // MARK: - Initialization
+    
     override init?(frame: NSRect, isPreview: Bool) {
         super.init(frame: frame, isPreview: isPreview)
+
+        // Add SceneKit view (initialized lazily)
+        self.addSubview(self.sceneView)
+
+        // Use auto-layout
+        self.sceneView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            self.sceneView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+            self.sceneView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+            self.sceneView.topAnchor.constraint(equalTo: self.topAnchor),
+            self.sceneView.bottomAnchor.constraint(equalTo: self.bottomAnchor),
+        ])
+    }
+    
+    deinit {
+        self.sceneView.removeFromSuperview()
     }
 
     @available(*, unavailable)
     required init?(coder decoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-        
-    // MARK: - Cache
-
-    private struct Cache {
-        static let rbtwhite: NSColor = NSColor(red: 1, green: 1, blue: 1, alpha: 1)
-        static let rbtblack: NSColor = NSColor(red: 0, green: 0, blue: 0, alpha: 1)
-        static let rbtred: NSColor = NSColor(red: 210 / 255, green: 0 / 255, blue: 0 / 255, alpha: 1)
-        static let whites: [NSRect] = [
-            NSRect(x: 512, y: 192, width: 64, height: 64),
-            NSRect(x: 512, y: 256, width: 64, height: 64),
-            NSRect(x: 768, y: 384, width: 64, height: 64),
-            NSRect(x: 512, y: 320, width: 64, height: 64),
-            NSRect(x: 640, y: 384, width: 64, height: 64),
-            NSRect(x: 704, y: 448, width: 64, height: 64),
-            NSRect(x: 384, y: 448, width: 64, height: 64),
-            NSRect(x: 704, y: 512, width: 64, height: 64),
-            NSRect(x: 576, y: 512, width: 64, height: 64),
-            NSRect(x: 384, y: 512, width: 64, height: 64),
-            NSRect(x: 256, y: 512, width: 64, height: 64),
-            NSRect(x: 768, y: 576, width: 64, height: 64),
-            NSRect(x: 448, y: 576, width: 64, height: 64),
-            NSRect(x: 704, y: 640, width: 64, height: 64),
-            NSRect(x: 576, y: 640, width: 64, height: 64),
-            NSRect(x: 320, y: 640, width: 64, height: 64),
-            NSRect(x: 640, y: 704, width: 64, height: 64),
-            NSRect(x: 384, y: 704, width: 64, height: 64),
-            NSRect(x: 576, y: 768, width: 64, height: 64),
-            NSRect(x: 448, y: 768, width: 64, height: 64)
-        ]
-        static let blacks: [NSRect] = [
-            NSRect(x: 448, y: 192, width: 64, height: 64),
-            NSRect(x: 448, y: 256, width: 64, height: 64),
-            NSRect(x: 448, y: 320, width: 64, height: 64),
-            NSRect(x: 704, y: 384, width: 64, height: 64),
-            NSRect(x: 576, y: 384, width: 64, height: 64),
-            NSRect(x: 512, y: 384, width: 64, height: 64),
-            NSRect(x: 448, y: 384, width: 64, height: 64),
-            NSRect(x: 384, y: 384, width: 64, height: 64),
-            NSRect(x: 320, y: 384, width: 64, height: 64),
-            NSRect(x: 640, y: 448, width: 64, height: 64),
-            NSRect(x: 576, y: 448, width: 64, height: 64),
-            NSRect(x: 512, y: 448, width: 64, height: 64),
-            NSRect(x: 448, y: 448, width: 64, height: 64),
-            NSRect(x: 320, y: 448, width: 64, height: 64),
-            NSRect(x: 256, y: 448, width: 64, height: 64),
-            NSRect(x: 640, y: 512, width: 64, height: 64),
-            NSRect(x: 512, y: 512, width: 64, height: 64),
-            NSRect(x: 448, y: 512, width: 64, height: 64),
-            NSRect(x: 320, y: 512, width: 64, height: 64),
-            NSRect(x: 192, y: 512, width: 64, height: 64),
-            NSRect(x: 704, y: 576, width: 64, height: 64),
-            NSRect(x: 640, y: 576, width: 64, height: 64),
-            NSRect(x: 576, y: 576, width: 64, height: 64),
-            NSRect(x: 512, y: 576, width: 64, height: 64),
-            NSRect(x: 384, y: 576, width: 64, height: 64),
-            NSRect(x: 320, y: 576, width: 64, height: 64),
-            NSRect(x: 256, y: 576, width: 64, height: 64),
-            NSRect(x: 640, y: 640, width: 64, height: 64),
-            NSRect(x: 512, y: 640, width: 64, height: 64),
-            NSRect(x: 448, y: 640, width: 64, height: 64),
-            NSRect(x: 384, y: 640, width: 64, height: 64),
-            NSRect(x: 256, y: 640, width: 64, height: 64),
-            NSRect(x: 192, y: 640, width: 64, height: 64),
-            NSRect(x: 576, y: 704, width: 64, height: 64),
-            NSRect(x: 512, y: 704, width: 64, height: 64),
-            NSRect(x: 448, y: 704, width: 64, height: 64),
-            NSRect(x: 320, y: 704, width: 64, height: 64),
-            NSRect(x: 256, y: 704, width: 64, height: 64),
-            NSRect(x: 512, y: 768, width: 64, height: 64),
-            NSRect(x: 384, y: 768, width: 64, height: 64)
-        ]
-        static let reds: [NSRect] = [
-            NSRect(x: 768, y: 128, width: 64, height: 64),
-            NSRect(x: 704, y: 128, width: 64, height: 64),
-            NSRect(x: 640, y: 128, width: 64, height: 64),
-            NSRect(x: 576, y: 128, width: 64, height: 64),
-            NSRect(x: 768, y: 192, width: 64, height: 64),
-            NSRect(x: 704, y: 192, width: 64, height: 64),
-            NSRect(x: 640, y: 192, width: 64, height: 64),
-            NSRect(x: 576, y: 192, width: 64, height: 64),
-            NSRect(x: 384, y: 192, width: 64, height: 64),
-            NSRect(x: 320, y: 192, width: 64, height: 64),
-            NSRect(x: 256, y: 192, width: 64, height: 64),
-            NSRect(x: 192, y: 192, width: 64, height: 64),
-            NSRect(x: 128, y: 192, width: 64, height: 64),
-            NSRect(x: 768, y: 256, width: 64, height: 64),
-            NSRect(x: 704, y: 256, width: 64, height: 64),
-            NSRect(x: 640, y: 256, width: 64, height: 64),
-            NSRect(x: 576, y: 256, width: 64, height: 64),
-            NSRect(x: 384, y: 256, width: 64, height: 64),
-            NSRect(x: 320, y: 256, width: 64, height: 64),
-            NSRect(x: 256, y: 256, width: 64, height: 64),
-            NSRect(x: 192, y: 256, width: 64, height: 64),
-            NSRect(x: 128, y: 256, width: 64, height: 64),
-            NSRect(x: 768, y: 320, width: 64, height: 64),
-            NSRect(x: 704, y: 320, width: 64, height: 64),
-            NSRect(x: 640, y: 320, width: 64, height: 64),
-            NSRect(x: 576, y: 320, width: 64, height: 64),
-            NSRect(x: 384, y: 320, width: 64, height: 64),
-            NSRect(x: 320, y: 320, width: 64, height: 64),
-            NSRect(x: 256, y: 320, width: 64, height: 64),
-            NSRect(x: 192, y: 320, width: 64, height: 64),
-            NSRect(x: 128, y: 320, width: 64, height: 64),
-            NSRect(x: 256, y: 384, width: 64, height: 64),
-            NSRect(x: 192, y: 384, width: 64, height: 64),
-            NSRect(x: 128, y: 384, width: 64, height: 64),
-            NSRect(x: 832, y: 448, width: 64, height: 64),
-            NSRect(x: 768, y: 448, width: 64, height: 64),
-            NSRect(x: 192, y: 448, width: 64, height: 64),
-            NSRect(x: 128, y: 448, width: 64, height: 64),
-            NSRect(x: 832, y: 512, width: 64, height: 64),
-            NSRect(x: 768, y: 512, width: 64, height: 64),
-            NSRect(x: 768, y: 640, width: 64, height: 64),
-            NSRect(x: 768, y: 704, width: 64, height: 64),
-            NSRect(x: 704, y: 704, width: 64, height: 64),
-            NSRect(x: 192, y: 704, width: 64, height: 64),
-            NSRect(x: 768, y: 768, width: 64, height: 64),
-            NSRect(x: 704, y: 768, width: 64, height: 64),
-            NSRect(x: 640, y: 768, width: 64, height: 64),
-            NSRect(x: 320, y: 768, width: 64, height: 64),
-            NSRect(x: 256, y: 768, width: 64, height: 64),
-            NSRect(x: 192, y: 768, width: 64, height: 64),
-            NSRect(x: 320, y: 832, width: 64, height: 64),
-            NSRect(x: 256, y: 832, width: 64, height: 64),
-            NSRect(x: 192, y: 832, width: 64, height: 64)
-        ]
-    }
-
-    // MARK: - Colors
-
-    var rbtwhite: NSColor { return Cache.rbtwhite }
-    var rbtblack: NSColor { return Cache.rbtblack }
-    var rbtred: NSColor { return Cache.rbtred }
-
-    var whites: [NSRect] { return Cache.whites }
-    var blacks: [NSRect] { return Cache.blacks }
-    var reds: [NSRect] { return Cache.reds }
-
-    // MARK: - Drawing Methods
-
-    func drawBackground(color: NSColor = .clear) {
-        let background = NSBezierPath(rect: bounds)
-        color.setFill()
-        background.fill()
-    }
-
-    func drawLogo(_ rect: NSRect = NSRect(x: 0, y: 0, width: 1024, height: 1024), resizing: ResizingBehavior = .aspectFit) {
-        
-        // General Declarations
-        let context = NSGraphicsContext.current!.cgContext
-        
-        // Resize to Target Frame
-        NSGraphicsContext.saveGraphicsState()
-        let resizedFrame: NSRect = resizing.apply(rect: NSRect(x: 0, y: 0, width: 1024, height: 1024), target: rect)
-        context.translateBy(x: resizedFrame.minX, y: resizedFrame.minY)
-        context.scaleBy(x: resizedFrame.width / 1024, y: resizedFrame.height / 1024)
-
-        // rbt-squares-logo
-        NSGraphicsContext.saveGraphicsState()
-        context.beginTransparencyLayer(auxiliaryInfo: nil)
-
-        // rbt-squares-sign
-        
-        rbtwhite.setFill()
-        // TODO: make union and single fill for all squares instead of filling separately!
-        whites.forEach { rect in
-            rect.fill()
-        }
-        rbtblack.setFill()
-        blacks.forEach { rect in
-            rect.fill()
-        }
-        rbtred.setFill()
-        reds.forEach { rect in
-            rect.fill()
-        }
-
-        context.endTransparencyLayer()
-        NSGraphicsContext.restoreGraphicsState()
-        
-        NSGraphicsContext.restoreGraphicsState()
-    }
     
-    @objc(RBTSquaresLogoResizingBehavior)
-    public enum ResizingBehavior: Int {
-        case aspectFit /// The content is proportionally resized to fit into the target rectangle.
-        case aspectFill /// The content is proportionally resized to completely fill the target rectangle.
-        case stretch /// The content is stretched to match the entire target rectangle.
-        case center /// The content is centered in the target rectangle, but it is NOT resized.
-
-        public func apply(rect: NSRect, target: NSRect) -> NSRect {
-            if rect == target || target == NSRect.zero {
-                return rect
-            }
-
-            var scales = NSSize.zero
-            scales.width = abs(target.width / rect.width)
-            scales.height = abs(target.height / rect.height)
-
-            switch self {
-                case .aspectFit:
-                    scales.width = min(scales.width, scales.height)
-                    scales.height = scales.width
-                case .aspectFill:
-                    scales.width = max(scales.width, scales.height)
-                    scales.height = scales.width
-                case .stretch:
-                    break
-                case .center:
-                    scales.width = 1
-                    scales.height = 1
-            }
-
-            var result = rect.standardized
-            result.size.width *= scales.width
-            result.size.height *= scales.height
-            result.origin.x = target.minX + (target.width - result.width) / 2
-            result.origin.y = target.minY + (target.height - result.height) / 2
-            return result
-        }
-    }
-
-    // MARK: - Lifecycle
-    
-    override func layout() {
-        super.layout()
-        
-        center = CGPoint(x: frame.midX, y: frame.midY)
-    }
-        
-    override func draw(_ rect: NSRect) {
-        super.draw(rect)
-        
-        drawBackground(color: .darkGray)
-
-        let r = CGRect(x: center.x - size / 2, y: center.y - size / 2, width: size, height: size)
-        // rbtwhite.withAlphaComponent(0.01).setFill()
-        // r.fill()
-        drawLogo(r, resizing: .aspectFit)
-    }
+    // MARK: - ScreenSaverView
     
     override func startAnimation() {
         guard isPreview else {
@@ -298,18 +353,10 @@ class RBTSquaresLogoScreenSaverView: ScreenSaverView {
         guard isPreview else {
             return
         }
-        
+
         super.animateOneFrame()
-        
-        let oob = isOutOfBounds()
-        if oob.x {
-            velocity.dx *= -1
-        }
-        if oob.y {
-            velocity.dy *= -1
-        }
-        center.x += velocity.dx
-        center.y += velocity.dy
+
+        // ...
 
         setNeedsDisplay(bounds)
     }
@@ -318,28 +365,7 @@ class RBTSquaresLogoScreenSaverView: ScreenSaverView {
         guard isPreview else {
             return
         }
-        
+
         super.stopAnimation()
-    }
-    
-    // MARK: - Private variables
-    
-    let size: CGFloat = 512
-    var center: CGPoint = .zero
-    var velocity: CGVector = {
-        let desiredVelocityMagnitude: CGFloat = 2
-        let xVelocity = CGFloat.random(in: 0.5...1.5)
-        let xSign: CGFloat = Bool.random() ? 1 : -1
-        let yVelocity = sqrt(pow(desiredVelocityMagnitude, 2) - pow(xVelocity, 2))
-        let ySign: CGFloat = Bool.random() ? 1 : -1
-        return CGVector(dx: xVelocity * xSign, dy: yVelocity * ySign)
-    }()
-    
-    // MARK: - Private utility functions
-    
-    private func isOutOfBounds() -> (x: Bool, y: Bool) {
-        let x = center.x - size / 2 <= 0 || center.x + size / 2 >= bounds.width
-        let y = center.y - size / 2 <= 0 || center.y + size / 2 >= bounds.height
-        return (x, y)
     }
 }
