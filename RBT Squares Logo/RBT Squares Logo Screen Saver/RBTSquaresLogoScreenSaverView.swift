@@ -39,7 +39,7 @@ import simd
  */
 class RBTSquaresLogoScreenSaverView: ScreenSaverView {
 
-    // MARK: - Cache
+    // MARK: - Static variables
 
     private struct Cache {
         static let rbtWhite = NSColor(red: 1, green: 1, blue: 1, alpha: 1)
@@ -103,7 +103,7 @@ class RBTSquaresLogoScreenSaverView: ScreenSaverView {
             let off = Float(self.rbtLogo.count - 1) / 2.0
             
             for (j, row) in self.rbtLogo.enumerated() {
-                var rowVals = [Any]()
+                //var rowVals = [Any]()
                 for (i, value) in row.enumerated() {
                     // offset index in a matrix
                     let ox = Float(i) - off /* -off to +off, depending to a position in a row */
@@ -124,7 +124,7 @@ class RBTSquaresLogoScreenSaverView: ScreenSaverView {
                     //let yrot = CGFloat(oy / off) * .pi / 6.0
                     //let zrot = CGFloat(0.0)
 
-                    rowVals.append(xtrans)
+                    //rowVals.append(xtrans)
 
                     guard value != 0 else { continue }
                     
@@ -158,7 +158,7 @@ class RBTSquaresLogoScreenSaverView: ScreenSaverView {
                     )
                     boxNodes.addChildNode(box)
                 }
-                debugPrint(rowVals)
+                //debugPrint(rowVals)
             }
             logoNode.addChildNode(boxNodes)
 
@@ -172,17 +172,18 @@ class RBTSquaresLogoScreenSaverView: ScreenSaverView {
         }
     }
 
-    // MARK: - Colors
+    // MARK: - Variables
     
     var rbtWhite: NSColor { return Cache.rbtWhite }
     var rbtBlack: NSColor { return Cache.rbtBlack }
     var rbtRed: NSColor { return Cache.rbtRed }
     var rbtLogo: [[Int]] { return Cache.rbtLogo }
     var boxSize: CGFloat { return Cache.boxSize }
-    var boxTypes: [SCNBox] { return Cache.boxTypes }
-    var logoNode: SCNNode { return Cache.logoNode }
 
     // MARK: - SceneKit
+
+    var boxTypes: [SCNBox] { return Cache.boxTypes }
+    var logoNode: SCNNode { return Cache.logoNode }
 
     lazy var sceneView: SCNView = {
         
