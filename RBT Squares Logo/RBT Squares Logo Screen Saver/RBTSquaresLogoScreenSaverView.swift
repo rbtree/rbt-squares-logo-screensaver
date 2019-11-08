@@ -219,8 +219,8 @@ class RBTSquaresLogoScreenSaverView: ScreenSaverView {
         scene.rootNode.addChildNode(cameraNode)
 
         // place the camera
-        cameraNode.position = SCNVector3(4, -24, 16)
-        cameraNode.orientation = SCNQuaternion(0.45, 0.05, 0.05, 1.0)
+        cameraNode.position = SCNVector3(32, 0, 32)
+        cameraNode.orientation = SCNQuaternion(0, .pi/8, 0, 1.0)
 
         // create and add a light to the scene
         let omniLightNode = SCNNode()
