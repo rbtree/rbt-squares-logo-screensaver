@@ -69,16 +69,16 @@ class RBTSquaresLogoScreenSaverView: ScreenSaverView {
 
         static var boxTypes: [SCNBox] {
             let whiteBox = SCNBox(width: boxSize, height: boxSize, length: boxSize, chamferRadius: 0.0)
-            whiteBox.firstMaterial!.diffuse.contents = self.rbtWhite
-            whiteBox.firstMaterial!.specular.contents = self.rbtWhite
+            whiteBox.firstMaterial?.diffuse.contents = self.rbtWhite
+            whiteBox.firstMaterial?.specular.contents = self.rbtWhite
             
             let blackBox = SCNBox(width: boxSize, height: boxSize, length: boxSize, chamferRadius: 0.0)
-            blackBox.firstMaterial!.diffuse.contents = self.rbtBlack
-            blackBox.firstMaterial!.specular.contents = self.rbtWhite.withAlphaComponent(0.25)
+            blackBox.firstMaterial?.diffuse.contents = self.rbtBlack
+            blackBox.firstMaterial?.specular.contents = self.rbtWhite.withAlphaComponent(0.25)
             
             let redBox = SCNBox(width: boxSize, height: boxSize, length: boxSize, chamferRadius: 0.0)
-            redBox.firstMaterial!.diffuse.contents = self.rbtRed
-            redBox.firstMaterial!.specular.contents = self.rbtWhite.withAlphaComponent(0.25)
+            redBox.firstMaterial?.diffuse.contents = self.rbtRed
+            redBox.firstMaterial?.specular.contents = self.rbtWhite.withAlphaComponent(0.25)
 
             return [
                 SCNBox(),
@@ -120,9 +120,9 @@ class RBTSquaresLogoScreenSaverView: ScreenSaverView {
                     let ztrans = self.boxSize * CGFloat((off - max(abs(ox), abs(oy))) / off) /* 0 to +boxSize to 0, depending to a position in a matrix, more at the center */
 
                     // absolute rotations per offset index in a matrix
-                    //let xrot = CGFloat(ox / off) * .pi / 6.0
-                    //let yrot = CGFloat(oy / off) * .pi / 6.0
-                    //let zrot = CGFloat(0.0)
+                    let xrot = CGFloat(0.0) // CGFloat(ox / off) * .pi / 6.0
+                    let yrot = CGFloat(0.0) // CGFloat(oy / off) * .pi / 6.0
+                    let zrot = CGFloat(0.0)
 
                     //rowVals.append(xtrans)
 
@@ -144,11 +144,11 @@ class RBTSquaresLogoScreenSaverView: ScreenSaverView {
                                 // 1/3
                                 SCNAction.group([
                                     SCNAction.moveBy(x: xtrans, y: ytrans, z: ztrans, duration: bd / 3.0),
-                                    //SCNAction.rotateBy(x: xrot, y: yrot, z: zrot, duration: bd / 3.0),
+                                    SCNAction.rotateBy(x: xrot, y: yrot, z: zrot, duration: bd / 3.0),
                                 ]),
                                 // 2/3
                                 SCNAction.group([
-                                    //SCNAction.rotateBy(x: -xrot, y: -yrot, z: -zrot, duration: bd / 3.0),
+                                    SCNAction.rotateBy(x: -xrot, y: -yrot, z: -zrot, duration: bd / 3.0),
                                     SCNAction.moveBy(x: -xtrans, y: -ytrans, z: -ztrans, duration: bd / 3.0),
                                 ]),
                                 // 3/3
@@ -164,7 +164,7 @@ class RBTSquaresLogoScreenSaverView: ScreenSaverView {
 
             //logoNode.runAction(
             //    SCNAction.repeatForever(
-            //        SCNAction.rotateBy(x: 0, y: 1, z: 0, duration: 1)
+            //        SCNAction.rotateBy(x: 0, y: .pi / 2.0, z: 0, duration: bd)
             //    )
             //)
 
@@ -214,23 +214,23 @@ class RBTSquaresLogoScreenSaverView: ScreenSaverView {
         cameraNode.name = "camera"
         cameraNode.camera = SCNCamera()
         scene.rootNode.addChildNode(cameraNode)
-        
+
         // place the camera
-        cameraNode.position = SCNVector3(x: 0, y: 0, z: 32)
-        //cameraNode.rotation = SCNVector4(x: .pi/4, y: 0, z: 0, w: 1)
+        cameraNode.position = SCNVector3(0, -24, 16)
+        cameraNode.orientation = SCNQuaternion(0.45, 0, 0.05, 1.0)
 
         // create and add a light to the scene
         let omniLightNode = SCNNode()
         omniLightNode.light = SCNLight()
-        omniLightNode.light!.type = .omni
+        omniLightNode.light?.type = .omni
         omniLightNode.position = SCNVector3(x: 0, y: 64, z: 64)
         scene.rootNode.addChildNode(omniLightNode)
         
         // create and add an ambient light to the scene
         let ambientLightNode = SCNNode()
         ambientLightNode.light = SCNLight()
-        ambientLightNode.light!.type = .ambient
-        ambientLightNode.light!.color = NSColor.darkGray
+        ambientLightNode.light?.type = .ambient
+        ambientLightNode.light?.color = NSColor.darkGray
         scene.rootNode.addChildNode(ambientLightNode)
         
 //        // animate the logo "box" and "logo" nodes
