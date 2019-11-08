@@ -66,17 +66,17 @@ class RBTSquaresLogoScreenSaverView: ScreenSaverView {
         ]
         
         static let boxSize = CGFloat(2.0)
-
+        
         static var boxTypes: [SCNBox] {
-            let whiteBox = SCNBox(width: boxSize, height: boxSize, length: boxSize, chamferRadius: 0.0)
+            let whiteBox = SCNBox(width: boxSize, height: boxSize, length: boxSize, chamferRadius: 0.05)
             whiteBox.firstMaterial?.diffuse.contents = self.rbtWhite
             whiteBox.firstMaterial?.specular.contents = self.rbtWhite
             
-            let blackBox = SCNBox(width: boxSize, height: boxSize, length: boxSize, chamferRadius: 0.0)
+            let blackBox = SCNBox(width: boxSize, height: boxSize, length: boxSize, chamferRadius: 0.05)
             blackBox.firstMaterial?.diffuse.contents = self.rbtBlack
             blackBox.firstMaterial?.specular.contents = self.rbtWhite.withAlphaComponent(0.25)
             
-            let redBox = SCNBox(width: boxSize, height: boxSize, length: boxSize, chamferRadius: 0.0)
+            let redBox = SCNBox(width: boxSize, height: boxSize, length: boxSize, chamferRadius: 0.05)
             redBox.firstMaterial?.diffuse.contents = self.rbtRed
             redBox.firstMaterial?.specular.contents = self.rbtWhite.withAlphaComponent(0.25)
 
@@ -94,8 +94,9 @@ class RBTSquaresLogoScreenSaverView: ScreenSaverView {
             logoNode.name = "logo"
             
             let boxNodes = SCNNode()
+            boxNodes.name = "boxes"
             
-            let bpm = Double.random(in: 60.0...120.0) /* normal beats per minute */
+            let bpm = Double.random(in: 60.0...100.0) /* normal beats per minute */
             let bps = bpm / 60.0 /* per second */
             let bd = 1.0 / bps /* beat duration */
             
@@ -117,11 +118,12 @@ class RBTSquaresLogoScreenSaverView: ScreenSaverView {
                     // absolute transitions per offset index in a matrix
                     let xtrans = self.boxSize * CGFloat(ox / off) /* -boxSize to 0 to +boxSize, depending to a position in a row, more at the edges */
                     let ytrans = self.boxSize * CGFloat(oy / off) /* -boxSize to 0 to +boxSize, depending to a position in a col, more at the edges */
-                    let ztrans = self.boxSize * CGFloat((off - max(abs(ox), abs(oy))) / off) /* 0 to +boxSize to 0, depending to a position in a matrix, more at the center */
+                    let ztrans = self.boxSize * CGFloat(1.5 * (off - max(abs(ox), abs(oy))) / off) /* 0 to +boxSize to 0, depending to a position in a matrix, more at the center */
 
                     // absolute rotations per offset index in a matrix
-                    let xrot = CGFloat(0.0) // CGFloat(ox / off) * .pi / 6.0
-                    let yrot = CGFloat(0.0) // CGFloat(oy / off) * .pi / 6.0
+                    let srot = CGFloat(.pi / 72.0)
+                    let xrot = srot * CGFloat(-sign(oy) * (off - max(abs(ox), abs(oy))) / off)
+                    let yrot = srot * CGFloat(sign(ox) * (off - max(abs(ox), abs(oy))) / off)
                     let zrot = CGFloat(0.0)
 
                     //rowVals.append(xtrans)
@@ -151,6 +153,7 @@ class RBTSquaresLogoScreenSaverView: ScreenSaverView {
                                     SCNAction.rotateBy(x: -xrot, y: -yrot, z: -zrot, duration: bd / 3.0),
                                     SCNAction.moveBy(x: -xtrans, y: -ytrans, z: -ztrans, duration: bd / 3.0),
                                 ]),
+                                
                                 // 3/3
                                 SCNAction.wait(duration: bd / 3.0),
                             ])
@@ -216,11 +219,12 @@ class RBTSquaresLogoScreenSaverView: ScreenSaverView {
         scene.rootNode.addChildNode(cameraNode)
 
         // place the camera
-        cameraNode.position = SCNVector3(0, -24, 16)
-        cameraNode.orientation = SCNQuaternion(0.45, 0, 0.05, 1.0)
+        cameraNode.position = SCNVector3(4, -24, 16)
+        cameraNode.orientation = SCNQuaternion(0.45, 0.05, 0.05, 1.0)
 
         // create and add a light to the scene
         let omniLightNode = SCNNode()
+        omniLightNode.name = "omni"
         omniLightNode.light = SCNLight()
         omniLightNode.light?.type = .omni
         omniLightNode.position = SCNVector3(x: 0, y: 64, z: 64)
@@ -228,6 +232,7 @@ class RBTSquaresLogoScreenSaverView: ScreenSaverView {
         
         // create and add an ambient light to the scene
         let ambientLightNode = SCNNode()
+        ambientLightNode.name = "ambient"
         ambientLightNode.light = SCNLight()
         ambientLightNode.light?.type = .ambient
         ambientLightNode.light?.color = NSColor.darkGray
